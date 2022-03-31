@@ -1,15 +1,17 @@
 package com.example.demo.entity;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.time.ZonedDateTime;
-
-@Value
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Trade {
-    int sellOrderId;
-    int buyOrderId;
-    int tradeId;
-    String companySymbols;
-    int amount;
-    int price;
+    private int sellOrderId;
+    private int buyOrderId;
+    private int tradeId;
+    private String companySymbols;
+    private int amount;
+    private int price;
 }

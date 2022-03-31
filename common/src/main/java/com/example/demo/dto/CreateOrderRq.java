@@ -9,6 +9,6 @@ import lombok.Data;
 public class CreateOrderRq {
     private String companySymbol;
     private Position position;
-    private Integer amount;
     private Integer price;
+    private Integer amount;
 }

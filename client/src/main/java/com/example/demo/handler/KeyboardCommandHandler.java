@@ -18,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 @Component
 @RequiredArgsConstructor
 public class KeyboardCommandHandler {
+    public static final String UNKNOWN_COMMAND = "Unknown command, call \"help\" for documentation";
     @Autowired
     private final RestTemplate template;
     @Autowired
@@ -37,6 +38,10 @@ public class KeyboardCommandHandler {
         }
 
         String[] parts = input.split(" ");
+        if (parts.length != 5) {
+            System.out.println(UNKNOWN_COMMAND);
+            return;
+        }
         String symbol = parts[1];
         String position = parts[2];
         String amount = parts[3];
@@ -44,7 +49,7 @@ public class KeyboardCommandHandler {
         if (isCorrect(parts)) {
             try {
                 CreateOrderRq rq = new CreateOrderRq(symbol, Position.fromString(position.toUpperCase()),
-                        Integer.parseInt(amount), Integer.parseInt(price));
+                        Integer.parseInt(price), Integer.parseInt(amount));
                 HttpEntity<Object> request = new HttpEntity<>(mapper.writeValueAsString(rq), getHttpHeaders());
                 CreateOrderRs rs = template.postForEntity("http://localhost:8080/order",
                         request, CreateOrderRs.class).getBody();
@@ -54,7 +59,7 @@ public class KeyboardCommandHandler {
                 log.error("serialization error=", e);
             }
         } else {
-            System.out.println("Unknown command, call \"help\" for documentation");
+            System.out.println(UNKNOWN_COMMAND);
         }
     }
 
@@ -65,9 +70,6 @@ public class KeyboardCommandHandler {
     }
 
     private boolean isCorrect(String[] parts) {
-        if (parts.length != 5) {
-            return false;
-        }
         if (!(parts[0].equalsIgnoreCase("add"))) {
             return false;
         }

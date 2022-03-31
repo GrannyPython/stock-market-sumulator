@@ -7,6 +7,7 @@ import com.example.demo.dto.CreateOrderRs;
 import com.example.demo.entity.Book;
 import com.example.demo.entity.Order;
 import com.example.demo.entity.OrderType;
+import com.example.demo.entity.Position;
 import com.example.demo.keeper.BookKeeper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,10 +34,9 @@ public class OrderService {
     }
 
     public CancelOrderRs cancelOrder(CancelOrderRq rq) {
-        Map<String, Book> books = bookKeeper.getBooks();
-        Book book = books.get(rq.getCompanySymbol());
-        book.addOrder(new Order(orderIdGenerator.incrementAndGet(), rq.getCompanySymbol(), rq.getPosition(),
-                rq.getPrice(), rq.getAmount(), ZonedDateTime.now(), OrderType.CANCEL));
+        Order order = new Order(rq.getId(), rq.getCompanySymbol(), rq.getPosition(),
+                rq.getPrice(), rq.getAmount(), ZonedDateTime.now(), OrderType.CANCEL);
+        Book book = bookKeeper.addOrderToBook(rq.getCompanySymbol(), order);
 
         return new CancelOrderRs("OK");
     }

@@ -239,7 +239,7 @@ class OrderControllerTest {
         assertEquals(2, book.getBalancedOrdersToBuySize());
         assertEquals(0, book.getBalancedOrdersToSellSize());
 
-        CancelOrderRq cancelOrderRq0 = new CancelOrderRq(orderId0, GOOGL, Position.BUY, 3, 3);
+        CancelOrderRq cancelOrderRq0 = new CancelOrderRq(orderId1, GOOGL, Position.BUY, 3, 3);
         controller.cancelOrder(cancelOrderRq0);
 
         engine.balance(book);
@@ -248,7 +248,7 @@ class OrderControllerTest {
         assertEquals(1, book.getBalancedOrdersToBuySize());
         assertEquals(0, book.getBalancedOrdersToSellSize());
 
-        CancelOrderRq cancelOrderRq1 = new CancelOrderRq(orderId1, GOOGL, Position.BUY, 1, 1);
+        CancelOrderRq cancelOrderRq1 = new CancelOrderRq(orderId0, GOOGL, Position.BUY, 1, 1);
         controller.cancelOrder(cancelOrderRq1);
 
         assertEquals(1, book.getUnbalancedOrdersToBuySize());

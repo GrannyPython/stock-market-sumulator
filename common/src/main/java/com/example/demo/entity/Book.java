@@ -150,7 +150,8 @@ public class Book {
     }
 
     private boolean orderHasCancelled(Order balancedOrder, Order cancelOrder) {
-        return balancedOrder.getPosition().equals(cancelOrder.getPosition())
+        return balancedOrder.getOrderId() == cancelOrder.getOrderId()
+                && balancedOrder.getPosition().equals(cancelOrder.getPosition())
                 && balancedOrder.getCompanySymbols().equals(cancelOrder.getCompanySymbols())
                 && balancedOrder.getPrice() == cancelOrder.getPrice()
                 && balancedOrder.getAmount() == cancelOrder.getAmount();
