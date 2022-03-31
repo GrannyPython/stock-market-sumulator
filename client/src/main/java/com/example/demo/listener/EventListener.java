@@ -17,13 +17,13 @@ class EventListener {
     @org.springframework.context.event.EventListener({ContextRefreshedEvent.class})
     void contextRefreshedEvent() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Client ready to work, type something");
+        log.info("Client ready to work, type something");
         while (true) {
             String input = scanner.nextLine();
             try {
                 handler.process(input);
             } catch (RuntimeException ex) {
-                log.info("Ex=", ex);
+                log.error("Ex=", ex);
             }
         }
     }

@@ -26,20 +26,20 @@ public class KeyboardCommandHandler {
 
     public void process(String input) {
         if (input == null || input.trim().length() == 0) {
-            System.out.println("Empty input not allowed, try \"man\" or \"help\"");
+            log.warn("Empty input not allowed, try \"man\" or \"help\"");
             return;
         }
         input = input.trim();
         if (input.equals("help") | input.equals("man")) {
-            System.out.println("Example of valid command:");
-            System.out.println("add GOOG B 100 50");
-            System.out.println("add GOOG S 100 50");
+            log.info("Example of valid command:");
+            log.info("add GOOG B 100 50");
+            log.info("add GOOG S 100 50");
             return;
         }
 
         String[] parts = input.split(" ");
         if (parts.length != 5) {
-            System.out.println(UNKNOWN_COMMAND);
+            log.warn(UNKNOWN_COMMAND);
             return;
         }
         String symbol = parts[1];
@@ -59,7 +59,7 @@ public class KeyboardCommandHandler {
                 log.error("serialization error=", e);
             }
         } else {
-            System.out.println(UNKNOWN_COMMAND);
+            log.warn(UNKNOWN_COMMAND);
         }
     }
 
@@ -79,14 +79,14 @@ public class KeyboardCommandHandler {
         try {
             int amount = Integer.parseInt(parts[3]);
         } catch (Exception ex) {
-            System.out.println("Wrong amount, try again");
+            log.warn("Wrong amount, try again");
             return false;
         }
 
         try {
             int price = Integer.parseInt(parts[4]);
         } catch (Exception ex) {
-            System.out.println("Wrong price, try again");
+            log.warn("Wrong price, try again");
             return false;
         }
         return true;

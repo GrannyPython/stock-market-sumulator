@@ -1,13 +1,15 @@
 package com.example.demo.dto;
 
 import com.example.demo.entity.Position;
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-@Value
+@Data
+@AllArgsConstructor
 public class CancelOrderRq {
-    Integer id;
-    String companySymbol;
-    Position position;
-    int amount;
-    Integer price;
+    private Integer id;
+    private String companySymbol;
+    private Position position;
+    private int amount;
+    private Integer price;
 }
