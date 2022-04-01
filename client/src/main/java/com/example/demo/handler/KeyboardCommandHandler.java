@@ -13,24 +13,26 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.apache.commons.lang3.StringUtils;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class KeyboardCommandHandler {
     public static final String UNKNOWN_COMMAND = "Unknown command, call \"help\" for documentation";
+    public static final int PARAMS_NUM = 5;
     @Autowired
     private final RestTemplate template;
     @Autowired
     private final ObjectMapper mapper;
 
     public void process(String input) {
-        if (input == null || input.trim().length() == 0) {
-            log.warn("Empty input not allowed, try \"man\" or \"help\"");
+        if (StringUtils.isNotEmpty(input)) {
+            log.warn("Empty input is not allowed, try \"man\" or \"help\"");
             return;
         }
         input = input.trim();
-        if (input.equals("help") | input.equals("man")) {
+        if ("help".equals(input) || "man".equals(input)) {
             log.info("Example of valid command:");
             log.info("add GOOG B 100 50");
             log.info("add GOOG S 100 50");
@@ -38,7 +40,7 @@ public class KeyboardCommandHandler {
         }
 
         String[] parts = input.split(" ");
-        if (parts.length != 5) {
+        if (parts.length != PARAMS_NUM) {
             log.warn(UNKNOWN_COMMAND);
             return;
         }
@@ -70,10 +72,10 @@ public class KeyboardCommandHandler {
     }
 
     private boolean isCorrect(String[] parts) {
-        if (!(parts[0].equalsIgnoreCase("add"))) {
+        if (!("add".equalsIgnoreCase(parts[0]))) {
             return false;
         }
-        if (!(parts[2].equalsIgnoreCase("B") || parts[2].equalsIgnoreCase("S"))) {
+        if (!("B".equalsIgnoreCase(parts[2]) || "S".equalsIgnoreCase(parts[2]))) {
             return false;
         }
         try {

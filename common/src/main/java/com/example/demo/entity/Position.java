@@ -3,8 +3,6 @@ package com.example.demo.entity;
 
 import lombok.Getter;
 
-import java.awt.geom.Point2D;
-
 public enum Position {
     BUY("B"), SELL("S");
 

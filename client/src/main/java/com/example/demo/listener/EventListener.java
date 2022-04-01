@@ -15,7 +15,7 @@ class EventListener {
     private final KeyboardCommandHandler handler;
 
     @org.springframework.context.event.EventListener({ContextRefreshedEvent.class})
-    void contextRefreshedEvent() {
+    public void contextRefreshedEvent() {
         Scanner scanner = new Scanner(System.in);
         log.info("Client ready to work, type something");
         while (true) {

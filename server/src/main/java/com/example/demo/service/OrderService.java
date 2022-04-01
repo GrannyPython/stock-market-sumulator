@@ -4,17 +4,14 @@ import com.example.demo.dto.CancelOrderRq;
 import com.example.demo.dto.CancelOrderRs;
 import com.example.demo.dto.CreateOrderRq;
 import com.example.demo.dto.CreateOrderRs;
-import com.example.demo.entity.Book;
 import com.example.demo.entity.Order;
 import com.example.demo.entity.OrderType;
-import com.example.demo.entity.Position;
 import com.example.demo.keeper.BookKeeper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -28,7 +25,7 @@ public class OrderService {
         int orderId = this.orderIdGenerator.getAndIncrement();
         Order order = new Order(orderId, rq.getCompanySymbol(), rq.getPosition(),
                 rq.getPrice(), rq.getAmount(), ZonedDateTime.now(), OrderType.CREATE);
-        Book book = bookKeeper.addOrderToBook(rq.getCompanySymbol(), order);
+        bookKeeper.addOrderToBook(rq.getCompanySymbol(), order);
 
         return new CreateOrderRs(orderId, "OK");
     }
@@ -36,7 +33,7 @@ public class OrderService {
     public CancelOrderRs cancelOrder(CancelOrderRq rq) {
         Order order = new Order(rq.getId(), rq.getCompanySymbol(), rq.getPosition(),
                 rq.getPrice(), rq.getAmount(), ZonedDateTime.now(), OrderType.CANCEL);
-        Book book = bookKeeper.addOrderToBook(rq.getCompanySymbol(), order);
+        bookKeeper.addOrderToBook(rq.getCompanySymbol(), order);
 
         return new CancelOrderRs("OK");
     }

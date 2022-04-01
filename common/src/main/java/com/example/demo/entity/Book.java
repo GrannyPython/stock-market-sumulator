@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,26 +46,28 @@ public class Book {
         List<Order> mergedOrdersToSell = balanceOrders(this.unbalancedOrdersToSell, this.balancedOrdersToSell);
 
         List<Trade> trades = new ArrayList<>();
-        if ((mergedOrdersToBuy != null && !mergedOrdersToBuy.isEmpty()) &&
-                (mergedOrdersToSell != null && !mergedOrdersToSell.isEmpty())) {
+
+        if (!CollectionUtils.isEmpty(mergedOrdersToBuy) && !CollectionUtils.isEmpty(mergedOrdersToSell)) {
 
             Order cheapestOrderToSell = mergedOrdersToSell.get(mergedOrdersToSell.size() - 1);
             Order orderToBuy = mergedOrdersToBuy.get(0);
 
             while (cheapestOrderToSell != null && orderToBuy != null
                     && cheapestOrderToSell.getPrice() <= orderToBuy.getPrice()) {
+
                 int orderToSellAmount = cheapestOrderToSell.getAmount();
                 int orderToBuyAmount = orderToBuy.getAmount();
+
                 if (orderToSellAmount == orderToBuyAmount) {
                     mergedOrdersToSell.remove(cheapestOrderToSell);
                     mergedOrdersToBuy.remove(orderToBuy);
 
-                    trades.add(new Trade(cheapestOrderToSell.getOrderId(), orderToBuy.getOrderId(),
-                            tradeIdGenerator.getAndIncrement(), this.symbols,
-                            orderToBuyAmount, cheapestOrderToSell.getPrice()));
+                    saveTrades(trades, cheapestOrderToSell, orderToBuy, orderToBuyAmount);
+
                     if (mergedOrdersToSell.isEmpty() || mergedOrdersToBuy.isEmpty()) {
                         break;
                     }
+
                     cheapestOrderToSell = mergedOrdersToSell.get(mergedOrdersToSell.size() - 1);
                     orderToBuy = mergedOrdersToBuy.get(0);
                     continue;
@@ -72,9 +75,9 @@ public class Book {
                 if (orderToSellAmount > orderToBuyAmount) {
                     cheapestOrderToSell.setAmount(orderToSellAmount - orderToBuyAmount);
                     mergedOrdersToBuy.remove(orderToBuy);
-                    trades.add(new Trade(cheapestOrderToSell.getOrderId(), orderToBuy.getOrderId(),
-                            tradeIdGenerator.getAndIncrement(), this.symbols,
-                            orderToBuyAmount, cheapestOrderToSell.getPrice()));
+
+                    saveTrades(trades, cheapestOrderToSell, orderToBuy, orderToBuyAmount);
+
                     if (mergedOrdersToSell.isEmpty() || mergedOrdersToBuy.isEmpty()) {
                         break;
                     }
@@ -85,9 +88,8 @@ public class Book {
 
                 mergedOrdersToSell.remove(cheapestOrderToSell);
                 orderToBuy.setAmount(orderToBuyAmount - orderToSellAmount);
-                trades.add(new Trade(cheapestOrderToSell.getOrderId(), orderToBuy.getOrderId(),
-                        tradeIdGenerator.getAndIncrement(), this.symbols,
-                        cheapestOrderToSell.getAmount(), cheapestOrderToSell.getPrice()));
+
+                saveTrades(trades, cheapestOrderToSell, orderToBuy, cheapestOrderToSell.getAmount());
 
                 if (mergedOrdersToSell.isEmpty() || mergedOrdersToBuy.isEmpty()) {
                     break;
@@ -98,6 +100,12 @@ public class Book {
         }
 
         return trades;
+    }
+
+    private void saveTrades(List<Trade> trades, Order cheapestOrderToSell, Order orderToBuy, int orderToBuyAmount) {
+        trades.add(new Trade(cheapestOrderToSell.getOrderId(), orderToBuy.getOrderId(),
+                tradeIdGenerator.getAndIncrement(), this.symbols,
+                orderToBuyAmount, cheapestOrderToSell.getPrice()));
     }
 
     private List<Order> balanceOrders(List<Order> unbalancedOrders, List<Order> balancedOrders) {
