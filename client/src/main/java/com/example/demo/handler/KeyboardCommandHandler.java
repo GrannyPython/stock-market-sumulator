@@ -19,7 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 @Component
 @RequiredArgsConstructor
 public class KeyboardCommandHandler {
-    public static final String UNKNOWN_COMMAND = "Unknown command, call \"help\" for documentation";
+    public static final String UNKNOWN_COMMAND = "Unknown command, call \"help\" or \"man\" for documentation";
     public static final int PARAMS_NUM = 5;
     @Autowired
     private final RestTemplate template;
@@ -27,7 +27,7 @@ public class KeyboardCommandHandler {
     private final ObjectMapper mapper;
 
     public void process(String input) {
-        if (StringUtils.isNotEmpty(input)) {
+        if (StringUtils.isEmpty(input)) {
             log.warn("Empty input is not allowed, try \"man\" or \"help\"");
             return;
         }
